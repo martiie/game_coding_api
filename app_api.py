@@ -76,6 +76,11 @@ def check_answer(req: CheckRequest):
         message=f"✅ ถูกต้อง! \n key : {game['key']}" if correct else f"out: {req.items} \n ❌ ยังไม่ถูก ลองอีกครั้งนะ "
     )
 
+class HintRequest(BaseModel):
+    game_id: str
+    key: str
+    hint_id: int  # เช่น 1, 2, 3
+    
 @app.post("/hint")
 def get_hint(req: HintRequest):
     g=games.get(req.game_id-1)
