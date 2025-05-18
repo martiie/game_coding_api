@@ -31,7 +31,7 @@ class CheckResponse(BaseModel):
     correct: bool
     message: str
 
-@app.post("/game/{game_id}/check", response_model=CheckResponse)
+@app.post("/game/1/start", response_model=CheckResponse)
 def check_answer(game_id: str, req: CheckRequest):
     game = games.get(game_id)
     if not game:
@@ -43,10 +43,38 @@ def check_answer(game_id: str, req: CheckRequest):
 
     return CheckResponse(
         correct=correct,
-        message="✅ ถูกต้อง!" if correct else f"out: {req.items} \n ❌ ยังไม่ถูก ลองอีกครั้งนะ "
+        message=f"✅ ถูกต้อง! \n key : {game["key"]}" if correct else f"out: {req.items} \n ❌ ยังไม่ถูก ลองอีกครั้งนะ "
+    )
+    
+@app.post("/game/2/ewadsdy", response_model=CheckResponse)
+def check_answer(game_id: str, req: CheckRequest):
+    game = games.get(game_id)
+    if not game:
+        raise HTTPException(status_code=404, detail="Game not found")
+
+    expected_output = game["output"]
+
+    correct = req.items == expected_output
+
+    return CheckResponse(
+        correct=correct,
+        message=f"✅ ถูกต้อง! \n key : {game["key"]}" if correct else f"out: {req.items} \n ❌ ยังไม่ถูก ลองอีกครั้งนะ "
     )
 
+@app.post("/game/3/fshtsjl", response_model=CheckResponse)
+def check_answer(game_id: str, req: CheckRequest):
+    game = games.get(game_id)
+    if not game:
+        raise HTTPException(status_code=404, detail="Game not found")
 
+    expected_output = game["output"]
+
+    correct = req.items == expected_output
+
+    return CheckResponse(
+        correct=correct,
+        message=f"✅ ถูกต้อง! \n key : {game["key"]}" if correct else f"out: {req.items} \n ❌ ยังไม่ถูก ลองอีกครั้งนะ "
+    )
 
 
 
