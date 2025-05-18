@@ -32,8 +32,8 @@ class CheckResponse(BaseModel):
     message: str
 
 @app.post("/game/1/start", response_model=CheckResponse)
-def check_answer(game_id: str, req: CheckRequest):
-    game = games.get(game_id)
+def check_answer(req: CheckRequest):
+    game = games.get('1')
     if not game:
         raise HTTPException(status_code=404, detail="Game not found")
 
@@ -47,8 +47,8 @@ def check_answer(game_id: str, req: CheckRequest):
     )
     
 @app.post("/game/2/ewadsdy", response_model=CheckResponse)
-def check_answer(game_id: str, req: CheckRequest):
-    game = games.get(game_id)
+def check_answer(req: CheckRequest):
+    game = games.get('2')
     if not game:
         raise HTTPException(status_code=404, detail="Game not found")
 
@@ -62,8 +62,8 @@ def check_answer(game_id: str, req: CheckRequest):
     )
 
 @app.post("/game/3/fshtsjl", response_model=CheckResponse)
-def check_answer(game_id: str, req: CheckRequest):
-    game = games.get(game_id)
+def check_answer(req: CheckRequest):
+    game = games.get('3')
     if not game:
         raise HTTPException(status_code=404, detail="Game not found")
 
