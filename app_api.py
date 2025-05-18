@@ -4,10 +4,9 @@ from pydantic import BaseModel
 import subprocess
 import tempfile
 import os
+from typing import Any
+from game_in_and_out import games
 
-from game_data import games
-from models import PuzzleResponse, AnswerRequest, AnswerResponse, HintResponse
-from logic import check_answer
 
 app = FastAPI()
 
@@ -24,34 +23,34 @@ app.add_middleware(
 @app.get("/")
 def home():
     return "test api python"
-#-----------------------------------------------------------------------------------------------------------------
-@app.get("/game/{game_id}", response_model=PuzzleResponse)
-def get_game(game_id: str):
-    game = games.get(game_id)
-    if not game:
-        raise HTTPException(status_code=404, detail="Game not found")
-    return PuzzleResponse(
-        id=game["id"],
-        title=game["title"],
-        description=game["description"],
-        input=game["input"]
-    )
 
-@app.get("/game/{game_id}/hint", response_model=HintResponse)
-def get_hint(game_id: str):
-    game = games.get(game_id)
-    if not game:
-        raise HTTPException(status_code=404, detail="Game not found")
-    return HintResponse(hint=game["hint"])
+class CheckRequest(BaseModel):
+    items: Any  # รับได้ทุกชนิด: str, list, dict, int
 
-@app.post("/game/{game_id}/check", response_model=AnswerResponse)
-def check(game_id: str, req: AnswerRequest):
+class CheckResponse(BaseModel):
+    correct: bool
+    message: str
+
+@app.post("/game/{game_id}/check", response_model=CheckResponse)
+def check_answer(game_id: str, req: CheckRequest):
     game = games.get(game_id)
     if not game:
         raise HTTPException(status_code=404, detail="Game not found")
-    
-    correct = check_answer(req.code, game["expected_output"])
-    return AnswerResponse(
+
+    expected_output = game["output"]
+
+    correct = req.items == expected_output
+
+    return CheckResponse(
         correct=correct,
-        message="✅ ถูกต้อง!" if correct else "❌ ยังไม่ถูก ลองอีกครั้งนะ"
+        message="✅ ถูกต้อง!" if correct else f"❌ ยังไม่ถูก ลองอีกครั้งนะ\nคำตอบของคุณ: {req.items}"
     )
+
+
+
+
+
+
+
+
+#-----------------------------------------------------------------------------------------------------------------
