@@ -76,7 +76,22 @@ def check_answer(req: CheckRequest):
         message=f"✅ ถูกต้อง! \n key : {game['key']}" if correct else f"out: {req.items} \n ❌ ยังไม่ถูก ลองอีกครั้งนะ "
     )
 
+@app.post("/hint")
+def get_hint(req: HintRequest):
+    game = games.get(req.game_id)
+    if not game:
+        raise HTTPException(status_code=404, detail="ไม่พบเกมนี้")
 
+    if req.key != game.get("key"):
+        raise HTTPException(status_code=401, detail="key ไม่ถูกต้อง")
+
+    hint_key = f"hint{req.hint_id}"
+    hint = game.get(hint_key)
+    if not hint:
+        raise HTTPException(status_code=404, detail="ไม่มี hint หมายเลขนี้")
+
+    return {"hint": hint}
+    )
 
 
 
