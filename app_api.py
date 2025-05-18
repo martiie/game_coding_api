@@ -83,11 +83,11 @@ class HintRequest(BaseModel):
     
 @app.post("/hint")
 def get_hint(req: HintRequest):
-    g=games.get(req.game_id-1)
+    g=games.get(str(int(req.game_id)-1))
     game = games.get(req.game_id)
     if not game:
         raise HTTPException(status_code=404, detail="ไม่พบเกมนี้")
-    if req.key == 1:
+    if req.game_id == "1":
         pass
     elif req.key != g.get("key"):
         raise HTTPException(status_code=401, detail="key ไม่ถูกต้อง")
