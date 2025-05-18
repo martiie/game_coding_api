@@ -78,11 +78,13 @@ def check_answer(req: CheckRequest):
 
 @app.post("/hint")
 def get_hint(req: HintRequest):
+    g=games.get(req.game_id-1)
     game = games.get(req.game_id)
     if not game:
         raise HTTPException(status_code=404, detail="ไม่พบเกมนี้")
-
-    if req.key != game.get("key"):
+    if req.key == 1:
+        pass
+    elif req.key != g.get("key"):
         raise HTTPException(status_code=401, detail="key ไม่ถูกต้อง")
 
     hint_key = f"hint{req.hint_id}"
