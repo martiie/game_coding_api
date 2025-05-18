@@ -93,9 +93,6 @@ def get_hint(req: HintRequest):
         raise HTTPException(status_code=404, detail="ไม่มี hint หมายเลขนี้")
 
     return {"hint": hint}
-    )
-
-
 
 
 #-----------------------------------------------------------------------------------------------------------------
