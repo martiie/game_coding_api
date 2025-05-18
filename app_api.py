@@ -43,7 +43,7 @@ def check_answer(game_id: str, req: CheckRequest):
 
     return CheckResponse(
         correct=correct,
-        message=f"✅ ถูกต้อง! \n key : {game["key"]}" if correct else f"out: {req.items} \n ❌ ยังไม่ถูก ลองอีกครั้งนะ "
+        message=f"✅ ถูกต้อง! \n key : {game['key']}" if correct else f"out: {req.items} \n ❌ ยังไม่ถูก ลองอีกครั้งนะ "
     )
     
 @app.post("/game/2/ewadsdy", response_model=CheckResponse)
@@ -58,7 +58,7 @@ def check_answer(game_id: str, req: CheckRequest):
 
     return CheckResponse(
         correct=correct,
-        message=f"✅ ถูกต้อง! \n key : {game["key"]}" if correct else f"out: {req.items} \n ❌ ยังไม่ถูก ลองอีกครั้งนะ "
+        message=f"✅ ถูกต้อง! \n key : {game['key']}" if correct else f"out: {req.items} \n ❌ ยังไม่ถูก ลองอีกครั้งนะ "
     )
 
 @app.post("/game/3/fshtsjl", response_model=CheckResponse)
@@ -73,7 +73,7 @@ def check_answer(game_id: str, req: CheckRequest):
 
     return CheckResponse(
         correct=correct,
-        message=f"✅ ถูกต้อง! \n key : {game["key"]}" if correct else f"out: {req.items} \n ❌ ยังไม่ถูก ลองอีกครั้งนะ "
+        message=f"✅ ถูกต้อง! \n key : {game['key']}" if correct else f"out: {req.items} \n ❌ ยังไม่ถูก ลองอีกครั้งนะ "
     )
 
 
