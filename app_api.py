@@ -5,6 +5,10 @@ import subprocess
 import tempfile
 import os
 
+from game_data import games
+from models import PuzzleResponse, AnswerRequest, AnswerResponse, HintResponse
+from logic import check_answer
+
 app = FastAPI()
 
 app = FastAPI()
@@ -21,43 +25,33 @@ app.add_middleware(
 def home():
     return "test api python"
 #-----------------------------------------------------------------------------------------------------------------
-class CodeRequest(BaseModel):
-    code: str
-    input: str = ""
+@app.get("/game/{game_id}", response_model=PuzzleResponse)
+def get_game(game_id: str):
+    game = games.get(game_id)
+    if not game:
+        raise HTTPException(status_code=404, detail="Game not found")
+    return PuzzleResponse(
+        id=game["id"],
+        title=game["title"],
+        description=game["description"],
+        input=game["input"]
+    )
 
-class CodeRequest(BaseModel):
-    source_code: str
+@app.get("/game/{game_id}/hint", response_model=HintResponse)
+def get_hint(game_id: str):
+    game = games.get(game_id)
+    if not game:
+        raise HTTPException(status_code=404, detail="Game not found")
+    return HintResponse(hint=game["hint"])
 
-@app.post("/run-python/")
-def run_python_code(request: CodeRequest):
-    code = request.source_code
-
-    # สร้างไฟล์ชั่วคราว
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".py", mode='w') as tmp_file:
-        tmp_file.write(code)
-        filename = tmp_file.name
-
-    try:
-        # รัน python script ที่เขียนโดยให้ print ผลลัพธ์ main()
-        # subprocess จะรันคำสั่ง python -c "from <filename> import main; print(main())"
-        # แต่เราจะรันผ่านไฟล์โดยตรงพร้อมคำสั่ง print(main())
-        command = [
-            "python",
-            "-c",
-            f"import sys; sys.path.insert(0, '{os.path.dirname(filename)}'); "
-            f"from {os.path.splitext(os.path.basename(filename))[0]} import main; "
-            f"print(main())"
-        ]
-        result = subprocess.run(command, capture_output=True, text=True, timeout=5)
-
-        if result.returncode != 0:
-            raise HTTPException(status_code=400, detail=result.stderr)
-
-        output = result.stdout.strip()
-        return {"output": output}
-
-    except subprocess.TimeoutExpired:
-        raise HTTPException(status_code=400, detail="Execution timed out")
-
-    finally:
-        os.remove(filename)
+@app.post("/game/{game_id}/check", response_model=AnswerResponse)
+def check(game_id: str, req: AnswerRequest):
+    game = games.get(game_id)
+    if not game:
+        raise HTTPException(status_code=404, detail="Game not found")
+    
+    correct = check_answer(req.code, game["expected_output"])
+    return AnswerResponse(
+        correct=correct,
+        message="✅ ถูกต้อง!" if correct else "❌ ยังไม่ถูก ลองอีกครั้งนะ"
+    )
