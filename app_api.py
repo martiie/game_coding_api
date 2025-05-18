@@ -43,7 +43,7 @@ def check_answer(game_id: str, req: CheckRequest):
 
     return CheckResponse(
         correct=correct,
-        message="✅ ถูกต้อง!" if correct else f"❌ ยังไม่ถูก ลองอีกครั้งนะ\nคำตอบของคุณ: {req.items}"
+        message="✅ ถูกต้อง!" if correct else f"out: {req.items} \n ❌ ยังไม่ถูก ลองอีกครั้งนะ "
     )
 
 
